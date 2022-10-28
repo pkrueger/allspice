@@ -8,5 +8,15 @@ namespace allspice.Services
     {
       _recrepo = recrepo;
     }
+
+    internal Recipe CreateRecipe(Recipe recipeData)
+    {
+      return _recrepo.CreateRecipe(recipeData);
+    }
+
+    internal List<Recipe> GetAllRecipes()
+    {
+      return _recrepo.GetAllRecipes();
+    }
   }
 }
