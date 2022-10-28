@@ -74,5 +74,20 @@ namespace allspice.Controllers
         return BadRequest(e.Message);
       }
     }
+
+    [HttpDelete("{recipeId}")]
+    public async Task<ActionResult<string>> DeleteRecipe(int recipeId)
+    {
+      try
+      {
+        Profile userInfo = await _a0p.GetUserInfoAsync<Profile>(HttpContext);
+        _rs.DeleteRecipe(recipeId, userInfo.Id);
+        return Ok("Recipe has been deleted.");
+      }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
   }
 }

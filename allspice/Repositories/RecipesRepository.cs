@@ -69,5 +69,14 @@ namespace allspice.Services
 
       return originalRecipe;
     }
+
+    internal void Delete(Recipe recipe)
+    {
+      string sql = @"
+      DELETE FROM recipes
+      WHERE id = @Id
+      ;";
+      _db.Execute(sql, recipe);
+    }
   }
 }

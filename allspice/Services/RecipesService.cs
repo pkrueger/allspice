@@ -34,7 +34,7 @@ namespace allspice.Services
       Recipe originalRecipe = GetRecipeById(recipeData.Id);
       if (originalRecipe.CreatorId != recipeData.CreatorId)
       {
-        throw new Exception("You don't own this chore.");
+        throw new Exception("You don't own this recipe.");
       }
 
       originalRecipe.Title = recipeData.Title ?? originalRecipe.Title;
@@ -43,6 +43,17 @@ namespace allspice.Services
       originalRecipe.Category = recipeData.Category ?? originalRecipe.Category;
 
       return _recrepo.Edit(originalRecipe);
+    }
+
+    internal void DeleteRecipe(int recipeId, string accountId)
+    {
+      Recipe recipe = GetRecipeById(recipeId);
+      if (recipe.CreatorId != accountId)
+      {
+        throw new Exception("You don't own this recipe.");
+      }
+
+      _recrepo.Delete(recipe);
     }
   }
 }
