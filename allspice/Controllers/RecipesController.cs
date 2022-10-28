@@ -59,6 +59,7 @@ namespace allspice.Controllers
     }
 
     [HttpPut("{recipeId}")]
+    [Authorize]
     public async Task<ActionResult<Recipe>> EditRecipe(int recipeId, [FromBody] Recipe recipeData)
     {
       try
@@ -76,6 +77,7 @@ namespace allspice.Controllers
     }
 
     [HttpDelete("{recipeId}")]
+    [Authorize]
     public async Task<ActionResult<string>> DeleteRecipe(int recipeId)
     {
       try
