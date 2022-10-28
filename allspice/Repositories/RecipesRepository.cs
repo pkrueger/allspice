@@ -24,7 +24,7 @@ namespace allspice.Services
 
     }
 
-    internal List<Recipe> GetAllRecipes()
+    internal List<Recipe> Get()
     {
       string sql = @"
       SELECT rec.*, a.*
@@ -51,6 +51,23 @@ namespace allspice.Services
         recipe.Creator = profile;
         return recipe;
       }, new { recipeId }).FirstOrDefault();
+    }
+
+    internal Recipe Edit(Recipe originalRecipe)
+    {
+      string sql = @"
+      UPDATE recipes SET
+        title = @Title, instructions = @Instructions, img = @Img, category = @Category
+      WHERE id = @Id
+      ;";
+      int rowsAffected = _db.Execute(sql, originalRecipe);
+
+      if (rowsAffected == 0)
+      {
+        throw new Exception("Unable to update.");
+      }
+
+      return originalRecipe;
     }
   }
 }

@@ -43,5 +43,36 @@ namespace allspice.Controllers
         return BadRequest(e.Message);
       }
     }
+
+    [HttpGet("{recipeId}")]
+    public ActionResult<Recipe> GetRecipeById(int recipeId)
+    {
+      try
+      {
+        Recipe recipe = _rs.GetRecipeById(recipeId);
+        return Ok(recipe);
+      }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
+
+    [HttpPut("{recipeId}")]
+    public async Task<ActionResult<Recipe>> EditRecipe(int recipeId, [FromBody] Recipe recipeData)
+    {
+      try
+      {
+        Profile userInfo = await _a0p.GetUserInfoAsync<Profile>(HttpContext);
+        recipeData.CreatorId = userInfo.Id;
+        recipeData.Id = recipeId;
+        Recipe recipe = _rs.EditRecipe(recipeData);
+        return Ok(recipe);
+      }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
   }
 }
