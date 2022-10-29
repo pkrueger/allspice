@@ -18,5 +18,15 @@ namespace allspice.Services
     {
       return _frepo.Get(userInfo);
     }
+
+    internal string DeleteFavorite(string favId, string accountId)
+    {
+      Favorite favorite = _frepo.Get(favId);
+      if (favorite.AccountId != accountId)
+      {
+        throw new Exception("You don't own this favorite.");
+      }
+      return _frepo.Delete(favId);
+    }
   }
 }

@@ -22,7 +22,22 @@ namespace allspice.Controllers
         Profile userInfo = await _a0p.GetUserInfoAsync<Profile>(HttpContext);
         favoriteData.AccountId = userInfo.Id;
         favoriteData.Id = Guid.NewGuid().ToString();
-        return _fs.CreateFavorite(favoriteData);
+        return Ok(_fs.CreateFavorite(favoriteData));
+      }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
+
+    [HttpDelete("{favId}")]
+    [Authorize]
+    public async Task<ActionResult<string>> DeleteFavorite(string favId)
+    {
+      try
+      {
+        Profile userInfo = await _a0p.GetUserInfoAsync<Profile>(HttpContext);
+        return Ok(_fs.DeleteFavorite(favId, userInfo.Id));
       }
       catch (Exception e)
       {

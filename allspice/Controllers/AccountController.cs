@@ -38,7 +38,7 @@ public class AccountController : ControllerBase
     try
     {
       Profile userInfo = await _auth0Provider.GetUserInfoAsync<Profile>(HttpContext);
-      return _fs.GetFavorites(userInfo);
+      return Ok(_fs.GetFavorites(userInfo));
     }
     catch (Exception e)
     {

@@ -29,6 +29,16 @@ namespace allspice.Repositories
       return favorite;
     }
 
+    internal string Delete(string favId)
+    {
+      string sql = @"
+      DELETE FROM favorites
+      WHERE id = @favId
+      ;";
+      _db.Execute(sql, new { favId });
+      return "Favorite has been deleted";
+    }
+
     internal List<Favorite> Get(Profile userInfo)
     {
       string sql = @"
