@@ -12,6 +12,22 @@ namespace allspice.Controllers
       _fs = fs;
     }
 
-
+    [HttpPost]
+    [Authorize]
+    public async Task<ActionResult<Favorite>> CreateFavorite(
+      [FromBody] Favorite favoriteData)
+    {
+      try
+      {
+        Profile userInfo = await _a0p.GetUserInfoAsync<Profile>(HttpContext);
+        favoriteData.AccountId = userInfo.Id;
+        favoriteData.Id = Guid.NewGuid().ToString();
+        return _fs.CreateFavorite(favoriteData);
+      }
+      catch (Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
   }
 }
