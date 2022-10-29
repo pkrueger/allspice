@@ -13,5 +13,10 @@ namespace allspice.Services
     {
       return _frepo.Create(favoriteData);
     }
+
+    internal List<Favorite> GetFavorites(Profile userInfo)
+    {
+      return _frepo.Get(userInfo);
+    }
   }
 }

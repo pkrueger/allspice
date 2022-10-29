@@ -28,5 +28,14 @@ namespace allspice.Repositories
       Favorite favorite = _db.QueryFirstOrDefault<Favorite>(sql, new { favId });
       return favorite;
     }
+
+    internal List<Favorite> Get(Profile userInfo)
+    {
+      string sql = @"
+      SELECT * FROM favorites
+      WHERE accountId = @Id
+      ;";
+      return _db.Query<Favorite>(sql, userInfo).ToList();
+    }
   }
 }
