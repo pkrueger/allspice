@@ -1,13 +1,13 @@
 <template>
   <button
-    class="btn btn-success selectable text-light text-uppercase m-2"
+    class="btn btn-success selectable text-light text-uppercase"
     @click="login"
     v-if="!user.isAuthenticated"
   >
     Login
   </button>
   <div v-else>
-    <div class="dropdown m-2">
+    <div class="dropdown">
       <div
         type="button"
         class="border-0 selectable no-select"
@@ -18,7 +18,7 @@
           <img
             :src="account.picture || user.picture"
             alt="account photo"
-            height="55"
+            height="40"
             class="photo"
           />
         </div>

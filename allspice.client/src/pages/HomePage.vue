@@ -1,3 +1,54 @@
+<script>
+import { onMounted, reactive } from "vue";
+import RecipeCard from "../components/RecipeCard.vue";
+import Login from "../components/Login.vue";
+import { computed } from "@vue/reactivity";
+import { AppState } from "../AppState.js";
+import Pop from "../utils/Pop.js";
+import { recipesService } from "../services/RecipesService.js";
+
+export default {
+  setup() {
+    const state = reactive({
+      activeFilter: computed(() => AppState.activeFilter),
+      recipes: computed(() => AppState.recipes),
+      favoriteRecipes: computed(() =>
+        AppState.recipes.filter((r) => {
+          for (let f of AppState.favorites) {
+            if (f.recipeId == r.id) {
+              return true;
+            }
+          }
+        })
+      ),
+    });
+
+    onMounted(() => {
+      getAllRecipes();
+    });
+
+    async function getAllRecipes() {
+      try {
+        await recipesService.getAllRecipes();
+      } catch (error) {
+        Pop.error(error, "[GetAllRecipes]");
+      }
+    }
+
+    function changeFilter(filter) {
+      try {
+        recipesService.changeFilter(filter);
+      } catch (error) {
+        Pop.error(error, "[ChangeFilter]");
+      }
+    }
+
+    return { state, changeFilter };
+  },
+  components: { RecipeCard, Login },
+};
+</script>
+
 <template>
   <div class="container-fluid">
     <div class="row">
@@ -12,13 +63,14 @@
                 aria-label="Search for recipe."
                 aria-describedby="search-button"
               />
+              <!-- TODO put basic button here for search bar -->
             </div>
           </div>
           <div class="login">
             <Login />
           </div>
         </div>
-        <div class="banner-text text-light text-shadow">
+        <div class="banner-text text-light text-shadow no-select">
           <h2 class="main">All-Spice</h2>
           <h5 class="sub">Cherish Your Family And Their Cooking</h5>
         </div>
@@ -26,8 +78,8 @@
           <div class="filter-button-container">
             <h5
               :class="state.activeFilter == 'Home' ? 'active-filter' : ''"
-              class="filter-button"
-              @click="state.activeFilter = 'Home'"
+              class="filter-button no-select"
+              @click="changeFilter('Home')"
             >
               Home
             </h5>
@@ -35,8 +87,8 @@
           <div class="filter-button-container">
             <h5
               :class="state.activeFilter == 'My Recipes' ? 'active-filter' : ''"
-              class="filter-button"
-              @click="state.activeFilter = 'My Recipes'"
+              class="filter-button no-select"
+              @click="changeFilter('My Recipes')"
             >
               My Recipes
             </h5>
@@ -44,8 +96,8 @@
           <div class="filter-button-container">
             <h5
               :class="state.activeFilter == 'Favorites' ? 'active-filter' : ''"
-              class="filter-button"
-              @click="state.activeFilter = 'Favorites'"
+              class="filter-button no-select"
+              @click="changeFilter('Favorites')"
             >
               Favorites
             </h5>
@@ -57,28 +109,14 @@
 
   <div class="container-fluid content">
     <div class="row">
-      <div class="col-12 recipes">
-        <RecipeCard />
+      <div class="col-12 p-0">
+        <div class="recipes">
+          <RecipeCard v-for="r in state.recipes" :key="r.id" :recipe="r" />
+        </div>
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import { reactive } from "vue";
-import RecipeCard from "../components/RecipeCard.vue";
-import Login from "../components/Login.vue";
-
-export default {
-  setup() {
-    const state = reactive({
-      activeFilter: "Home",
-    });
-    return { state };
-  },
-  components: { RecipeCard, Login },
-};
-</script>
 
 <style scoped lang="scss">
 .banner {
@@ -89,14 +127,15 @@ export default {
   height: 21rem;
   position: relative;
   border-radius: 0.5rem;
+  margin-bottom: 6rem;
 
   .top-banner {
     position: absolute;
     right: 0;
     top: 0;
     display: flex;
-    align-items: end;
     gap: 1rem;
+    margin: 1rem;
   }
 
   .banner-text {
@@ -157,10 +196,39 @@ export default {
 .content {
   .recipes {
     display: grid;
+    gap: 6rem;
+    grid-template-columns: repeat(3, 1fr);
+    padding-inline: 5rem;
+  }
+
+  @media (max-width: 1300px) {
+    .recipes {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .recipes {
+      gap: 3rem;
+      padding-inline: 2rem;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .recipes {
+      grid-template-columns: repeat(1, 1fr);
+      padding-inline: 5rem;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .recipes {
+      padding-inline: 2rem;
+    }
   }
 }
 
 .text-shadow {
-  text-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.766);
+  text-shadow: 0.125rem 0.15rem 0.188rem rgba(0, 0, 0, 0.5);
 }
 </style>

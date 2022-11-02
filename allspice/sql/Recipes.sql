@@ -12,3 +12,11 @@ CREATE TABLE
         creatorId VARCHAR(255) NOT NULL,
         FOREIGN KEY (creatorId) REFERENCES accounts(id)
     ) default charset utf8 COMMENT '';
+
+SELECT
+    rec.*,
+    a.id AS accountId,
+    a.name,
+    a.picture
+FROM recipes rec
+    JOIN accounts a ON a.id = rec.creatorId
